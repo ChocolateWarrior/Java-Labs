@@ -139,8 +139,8 @@ public class Controller {
                 indicator = inputScanner.scanNum();
             }
             catch (java.util.InputMismatchException exception){
-                System.out.println("Message:");
-                System.out.println(exception.getMessage());
+                Viewer.view("Message:");
+                Viewer.view(exception.getMessage());
                 manageControl();
             }
 
