@@ -25,5 +25,3 @@ class Generator {
     }
 
 }
-
-//TODO add storage class DONE

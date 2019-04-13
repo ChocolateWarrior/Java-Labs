@@ -3,7 +3,7 @@ package com.company.Model;
 
 import java.util.Objects;
 
-public class Executable {
+public class CarService {
 
     public Car[] getCarByMark(String name){
 

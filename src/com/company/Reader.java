@@ -1,16 +1,16 @@
-package com.company.Model;
+package com.company;
 
 import java.util.Scanner;
 
-public class InputScanner {
+public class Reader {
 
 
-    public int scanNum(){
+    public static int scanNum(){
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }
 
-    public String scanString(){
+    public static String scanString(){
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }

@@ -1,14 +1,13 @@
 package com.company.Controller;
 
-import com.company.Model.InputScanner;
+import com.company.Reader;
 import com.company.Model.Car;
-import com.company.Model.Executable;
+import com.company.Model.CarService;
 import com.company.Validators.InputValidator;
 import com.company.View.Viewer;
 import com.company.Model.Container;
-import com.company.Exceptions.UserException;
-
-import java.io.IOException;
+import com.company.Exceptions.WrongNumberException;
+import com.company.FileIO.*;
 
 
 public class Controller {
@@ -19,7 +18,7 @@ public class Controller {
 
     private void viewCarArr(Car[] cars){
         if(cars.length > 0) {
-                    Viewer.view("        Name    Model        ID        Price Colour RegNum   Year");
+            Viewer.view("        Name    Model        ID        Price Colour RegNum   Year");
 
             for (Car car : cars) {
                 viewCarInTable(car);
@@ -51,13 +50,16 @@ public class Controller {
 
     public void manageControl(){
 
-        Executable exe = new Executable();
+        //Reading file to set car array  in container
+        Car [] arrayToSet = FileInput.getArrayFromFileInput();
+        Container.setArray(arrayToSet);
 
-        InputScanner inputScanner = new InputScanner();
+        CarService exe = new CarService();
+
         int indicator = 0;
         try {
             showMenu();
-            indicator = inputScanner.scanNum();
+            indicator = Reader.scanNum();
         }
         catch (java.util.InputMismatchException e){
             Viewer.view("Exception in input occurred! ");
@@ -65,20 +67,34 @@ public class Controller {
         }
 
         Car[] resArr;
+        boolean isFirstIteration = true;
 
-        label: while (indicator == 1 || indicator == 2 || indicator == 3 || indicator == 4 ) {
+        label: while (indicator > 0 && indicator < 5 ) {
             switch (indicator) {
                 case 1:
                     String str1;
                     try {
                         Viewer.view("Type your mark:");
-                        str1 = inputScanner.scanString();
+                        str1 = Reader.scanString();
                     }
                     catch (java.util.InputMismatchException e) {
                         Viewer.view("Exception in input occurred! ");
                         break;
                     }
                     resArr = exe.getCarByMark(str1);
+                    if (isFirstIteration) {
+                        Container.setResultCarArray(resArr);
+                        isFirstIteration = false;
+                    } else Container.appendToResultCarArray(resArr, resArr.length);
+
+                    try {
+                        FileOutput.writeToFile();
+                        FileOutput.writeSerializedToFile();
+                        FileOutput.writeJSONtoFile();
+                    }catch (Exception e){
+                        Viewer.view("Exception has occurred while writing to file!");
+                        break;
+                    }
                     viewCarArr(resArr);
                     break;
                 case 2:
@@ -86,20 +102,34 @@ public class Controller {
                     int num1;
                     try {
                         Viewer.view("Type your model:");
-                        str2 = inputScanner.scanString();
+                        str2 = Reader.scanString();
                         Viewer.view("Type your car age:");
-                        num1 = inputScanner.scanNum();
+                        num1 = Reader.scanNum();
                         InputValidator.checkAge(num1);
                     }
                     catch (java.util.InputMismatchException e){
-                        Viewer.view("Exception in input occured!");
+                        Viewer.view("Exception in input occurred!");
                         break;
                     }
-                    catch (UserException e){
+                    catch (WrongNumberException e){
                         Viewer.view(e.getMessage() + "\n Your input age was: " + e.getNumber());
                         break;
                     }
+
                     resArr = exe.modelExpluatationFilter(str2, num1);
+                    if (isFirstIteration) {
+                        Container.setResultCarArray(resArr);
+                        isFirstIteration = false;
+                    } else Container.appendToResultCarArray(resArr, resArr.length);
+
+                    try {
+                        FileOutput.writeToFile();
+                        FileOutput.writeSerializedToFile();
+                        FileOutput.writeJSONtoFile();
+                    }catch (Exception e){
+                        Viewer.view("Exception has occurred while writing to file!");
+                        break;
+                    }
                     viewCarArr(resArr);
 
                     break;
@@ -108,21 +138,34 @@ public class Controller {
                     int num3;
                     try {
                         Viewer.view("Type your year:");
-                        num2 = inputScanner.scanNum();
+                        num2 = Reader.scanNum();
                         Viewer.view("Type your price:");
-                        num3 = inputScanner.scanNum();
+                        num3 = Reader.scanNum();
                         InputValidator.checkYear(num2);
                         InputValidator.checkPrice(num3);
                     }
                     catch (java.util.InputMismatchException e){
-                        Viewer.view("Exception in input occured!");
+                        Viewer.view("Exception in input occurred!");
                         break;
                     }
-                    catch (UserException e){
+                    catch (WrongNumberException e){
                         Viewer.view(e.getMessage());
                         break;
                     }
                     resArr = exe.priceExpluatationFilter(num2, num3);
+                    if (isFirstIteration) {
+                        Container.setResultCarArray(resArr);
+                        isFirstIteration = false;
+                    } else Container.appendToResultCarArray(resArr, resArr.length);
+
+                    try {
+                        FileOutput.writeToFile();
+                        FileOutput.writeSerializedToFile();
+                        FileOutput.writeJSONtoFile();
+                    }catch (Exception e){
+                        Viewer.view("Exception has occurred while writing to file!");
+                        break;
+                    }
                     viewCarArr(resArr);
 
                     break;
@@ -130,17 +173,17 @@ public class Controller {
                         showTable();
                     break;
                 default:
+
                     break label;
 
             }
 
             showMenu();
             try {
-                indicator = inputScanner.scanNum();
+                indicator = Reader.scanNum();
             }
             catch (java.util.InputMismatchException exception){
-                Viewer.view("Message:");
-                Viewer.view(exception.getMessage());
+                Viewer.view("Error occurred in input!");
                 manageControl();
             }
 

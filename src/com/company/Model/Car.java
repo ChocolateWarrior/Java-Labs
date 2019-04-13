@@ -1,6 +1,8 @@
 package com.company.Model;
 
-public class Car {
+import java.io.Serializable;
+
+public class Car implements Serializable {
 
     private String idNum, mark, model, colour, regNum;
     private int productionYear, price;
@@ -16,7 +18,7 @@ public class Car {
         price = 0;
     }
 
-    Car(String id, String mrk, String mdl, String clr, String rg, int prdYr, int prc){
+    public Car(String id, String mrk, String mdl, String clr, String rg, int prdYr, int prc){
         idNum = id;
         mark = mrk;
         model = mdl;

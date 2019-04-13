@@ -1,14 +1,14 @@
 package com.company.Exceptions;
 
-public class UserException extends Exception {
+public class WrongNumberException extends Exception {
 
     private int number;
 
-    public UserException(String msg) {
+    public WrongNumberException(String msg) {
         super(msg);
     }
 
-    public UserException(String msg, int number) {
+    public WrongNumberException(String msg, int number) {
         super(msg);
         this.number = number;
     }
